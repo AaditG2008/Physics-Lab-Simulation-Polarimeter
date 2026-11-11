@@ -1,0 +1,525 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Polarimeter Laboratory</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+</head>
+
+<body>
+
+<header>
+    <div class="top-label">MAIT | APPLIED PHYSICS LABORATORY</div>
+    <h1>VIRTUAL POLARIMETER LABORATORY</h1>
+    <p>Determination of Specific Rotation of Cane Sugar</p>
+    <span>EXPERIMENT NO. 07 | HALF-SHADE POLARIMETER</span>
+</header>
+
+<main>
+
+    <section class="intro">
+        <div class="live-dot"></div>
+        <span>INTERACTIVE EXPERIMENT</span>
+        <h2>Polarisation of Light</h2>
+        <p>
+            Study the rotation of plane-polarized light through
+            an optically active cane sugar solution.
+        </p>
+    </section>
+
+    <!-- OPTICAL APPARATUS -->
+
+    <section class="apparatus-section">
+        <div class="section-heading">
+            <span>01 / EXPERIMENT SETUP</span>
+            <h2>Optical Arrangement</h2>
+            <p>Visual representation of a half-shade polarimeter</p>
+        </div>
+
+        <div class="optical-stage">
+
+            <div class="beam"></div>
+
+            <div class="optical-items">
+
+                <div class="optical-item">
+                    <div class="instrument lamp">
+                        <span>☀</span>
+                    </div>
+                    <b>Light Source</b>
+                    <small>Monochromatic light</small>
+                </div>
+
+                <div class="connector">➜</div>
+
+                <div class="optical-item">
+                    <div class="instrument lens">
+                        <span>)(</span>
+                    </div>
+                    <b>Convex Lens</b>
+                    <small>Parallel beam</small>
+                </div>
+
+                <div class="connector">➜</div>
+
+                <div class="optical-item">
+                    <div class="instrument polarizer">
+                        <span>▥</span>
+                    </div>
+                    <b>Polarizer</b>
+                    <small>Plane polarization</small>
+                </div>
+
+                <div class="connector">➜</div>
+
+                <div class="optical-item">
+                    <div class="instrument shade">
+                        <span>◐</span>
+                    </div>
+                    <b>Half-Shade</b>
+                    <small>Brightness comparison</small>
+                </div>
+
+                <div class="connector">➜</div>
+
+                <div class="optical-item">
+                    <div class="instrument tube">
+                        <span>━━</span>
+                    </div>
+                    <b>Solution Tube</b>
+                    <small>Cane sugar solution</small>
+                </div>
+
+                <div class="connector">➜</div>
+
+                <div class="optical-item">
+                    <div class="instrument analyzer">
+                        <span id="analyzerSymbol">◉</span>
+                    </div>
+                    <b>Analyzer</b>
+                    <small>Rotating element</small>
+                </div>
+
+                <div class="connector">➜</div>
+
+                <div class="optical-item">
+                    <div class="instrument telescope">
+                        <span>◎</span>
+                    </div>
+                    <b>Telescope</b>
+                    <small>Field observation</small>
+                </div>
+
+            </div>
+
+            <div class="stage-caption">
+                <span class="live-dot"></span>
+                OPTICAL PATH | LIGHT PROPAGATION
+            </div>
+
+        </div>
+
+        <p class="note">
+            Schematic optical arrangement. Not drawn to scale.
+        </p>
+    </section>
+
+    <!-- SIMULATION -->
+
+    <section class="simulation-section">
+
+        <div class="section-heading">
+            <span>02 / LIVE SIMULATION</span>
+            <h2>Half-Shade Polarimeter Simulator</h2>
+            <p>Rotate the circular analyzer ring (with Main & Vernier scales) to find the equally dark null position.</p>
+        </div>
+
+        <!-- TUBE MEDIUM & CONCENTRATION CONTROL -->
+        <div class="medium-control-bar">
+            <div class="medium-selector">
+                <span class="control-label">TUBE CONTENTS:</span>
+                <button type="button" class="medium-btn active" id="btnMediumWater">
+                    💧 Pure Distilled Water (Reference)
+                </button>
+                <button type="button" class="medium-btn" id="btnMediumSugar">
+                    🧪 Cane Sugar Solution
+                </button>
+            </div>
+
+            <div class="sugar-params" id="sugarParams" style="display: none;">
+                <div class="param-inline">
+                    <label for="sugarConcentration">Concentration (<i>c</i>):</label>
+                    <input type="number" id="sugarConcentration" value="0.10" min="0.01" max="0.5" step="0.01">
+                    <span>gm/c.c.</span>
+                </div>
+                <div class="param-presets">
+                    <span class="preset-label">Presets:</span>
+                    <button type="button" class="preset-btn" data-c="0.05">0.05 (5%)</button>
+                    <button type="button" class="preset-btn active" data-c="0.10">0.10 (10%)</button>
+                    <button type="button" class="preset-btn" data-c="0.15">0.15 (15%)</button>
+                </div>
+                <div class="param-inline">
+                    <label for="simTubeLength">Tube Length (<i>l</i>):</label>
+                    <input type="number" id="simTubeLength" value="2.0" min="0.5" max="5.0" step="0.1">
+                    <span>dm</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="simulation">
+
+            <!-- TELESCOPE VIEW -->
+
+            <div class="field-panel">
+
+                <div class="panel-tag">TELESCOPE VIEW (EYEPIECE)</div>
+
+                <h3>Field of View</h3>
+
+                <div class="view-frame">
+                    <div class="view" id="view">
+                        <div class="half left" id="leftHalf"></div>
+                        <div class="half right" id="rightHalf"></div>
+                        <div class="half-shade-divider"></div>
+                        <div class="view-center"></div>
+                    </div>
+                </div>
+
+                <div class="null-status-badge" id="nullBadge">
+                    <span class="status-indicator-dot" id="statusDot"></span>
+                    <h3 id="brightnessStatus">
+                        Equal Darkness Position (Null)
+                    </h3>
+                </div>
+
+                <div class="brightness-info">
+                    <div>
+                        <span class="legend left-legend"></span>
+                        Left Half (<span id="leftIntensityVal">50%</span>)
+                    </div>
+                    <div>
+                        <span class="legend right-legend"></span>
+                        Right Half (<span id="rightIntensityVal">50%</span>)
+                    </div>
+                </div>
+
+                <div class="status-box">
+                    <span class="live-dot"></span>
+                    <b>OBSERVATION STATUS</b>
+                    <p id="observation">
+                        Both halves appear equally dark. This is the sensitive observation null point.
+                    </p>
+                </div>
+
+                <p class="note">
+                    💡 <b>Lab Manual Note:</b> The precision is highest when observing <b>equally dark</b> shades rather than bright illumination.
+                </p>
+
+            </div>
+
+            <!-- CONTROLS: CIRCULAR POLARIMETER RING -->
+
+            <div class="control-panel">
+
+                <div class="panel-tag">CIRCULAR ANALYZER SCALE</div>
+
+                <h3>Polarimeter Ring with Vernier</h3>
+                <p class="scale-info-text">
+                    Main Scale: 1 div = 0.5° &nbsp;|&nbsp; Vernier Scale: 10 div &nbsp;|&nbsp; <b>Least Count = 0.05°</b>
+                </p>
+
+                <!-- CIRCULAR SVG POLARIMETER DIAL -->
+                <div class="polarimeter-dial-container" id="dialContainer">
+                    <svg id="polarimeterSvg" viewBox="0 0 320 320" width="290" height="290">
+                        <!-- Outer Base Ring -->
+                        <circle cx="160" cy="160" r="154" fill="#0c1d30" stroke="#375574" stroke-width="3"/>
+                        <circle cx="160" cy="160" r="148" fill="#13273e" stroke="#233a52" stroke-width="1.5"/>
+
+                        <!-- Fixed Main Scale Graduations (Generated dynamically by JS) -->
+                        <g id="mainScaleTicks"></g>
+
+                        <!-- Rotatable Vernier Ring & Analyzer Disk -->
+                        <g id="rotatableAnalyzer" transform="rotate(0, 160, 160)">
+                            <!-- Inner Rotating Disk -->
+                            <circle cx="160" cy="160" r="106" fill="#183654" stroke="#5da9e9" stroke-width="2"/>
+                            <circle cx="160" cy="160" r="98" fill="#0f243a" stroke="#2b4e72" stroke-width="1.5"/>
+
+                            <!-- Vernier Scale Plate & Graduations (Generated by JS) -->
+                            <g id="vernierScaleTicks"></g>
+
+                            <!-- Optical Vibration Axis Guide -->
+                            <line x1="160" y1="64" x2="160" y2="256" stroke="#5de0e6" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.6"/>
+
+                            <!-- Pointer / Index Arrow (0-mark) -->
+                            <polygon points="160,56 154,70 166,70" fill="#ffdd53" stroke="#fff" stroke-width="1"/>
+                            <text x="160" y="82" text-anchor="middle" fill="#ffdd53" font-size="10" font-weight="bold">V0</text>
+
+                            <!-- Central Dial Knob with knurling -->
+                            <circle cx="160" cy="160" r="42" fill="#1b4168" stroke="#7acaff" stroke-width="2"/>
+                            <circle cx="160" cy="160" r="34" fill="#122a44" stroke="#3c6b96" stroke-width="1"/>
+                            <circle cx="160" cy="160" r="10" fill="#52d7ff"/>
+                            <text x="160" y="164" text-anchor="middle" fill="#091321" font-size="9" font-weight="bold">DRAG</text>
+                        </g>
+                    </svg>
+
+                    <div class="drag-hint">↻ Drag disk or use step buttons below</div>
+                </div>
+
+                <!-- VERNIER DIGITAL READOUT CARD -->
+                <div class="vernier-readout-card">
+                    <div class="readout-col">
+                        <span class="readout-label">MAIN SCALE (M.S.R)</span>
+                        <span class="readout-val" id="msrDisplay">0.0°</span>
+                    </div>
+                    <div class="readout-plus">+</div>
+                    <div class="readout-col">
+                        <span class="readout-label">VERNIER (V.S.R × L.C.)</span>
+                        <span class="readout-val" id="vsrDisplay">0 × 0.05°</span>
+                    </div>
+                    <div class="readout-equals">=</div>
+                    <div class="readout-col highlight">
+                        <span class="readout-label">TOTAL READING</span>
+                        <span class="readout-val large" id="totalAngleDisplay">0.00°</span>
+                    </div>
+                </div>
+
+                <!-- FINE ANGLE STEP CONTROLS -->
+                <div class="fine-controls">
+                    <button type="button" class="step-btn" data-step="-5.0" title="Rotate -5°">⏪ -5°</button>
+                    <button type="button" class="step-btn" data-step="-1.0" title="Rotate -1°">◀ -1°</button>
+                    <button type="button" class="step-btn fine" data-step="-0.05" title="Rotate -0.05° (1 Vernier step)">‹ -0.05°</button>
+                    <button type="button" class="step-btn fine" data-step="0.05" title="Rotate +0.05° (1 Vernier step)">+0.05° ›</button>
+                    <button type="button" class="step-btn" data-step="1.0" title="Rotate +1°">+1° ▶</button>
+                    <button type="button" class="step-btn" data-step="5.0" title="Rotate +5°">+5° ⏩</button>
+                </div>
+
+                <div class="dial-actions">
+                    <button type="button" class="action-btn secondary" id="resetAnalyzer">
+                        ↺ Reset Scale to 0°
+                    </button>
+                    <button type="button" class="action-btn find-null" id="btnFindNull">
+                        🎯 Align to Nearest Null Point
+                    </button>
+                </div>
+
+                <!-- RECORDING BAR: CW & CCW READINGS -->
+                <div class="record-panel">
+                    <div class="record-title">
+                        <span>RECORD CURRENT READING TO TABLE</span>
+                    </div>
+                    <div class="record-buttons-grid">
+                        <button type="button" class="rec-btn water" id="btnRecordWaterCW">
+                            💧 Record Water CW (<i>a</i>)
+                        </button>
+                        <button type="button" class="rec-btn water" id="btnRecordWaterCCW">
+                            💧 Record Water CCW (<i>b</i>)
+                        </button>
+                        <button type="button" class="rec-btn sugar" id="btnRecordSugarCW">
+                            🧪 Record Sugar CW (<i>a'</i>)
+                        </button>
+                        <button type="button" class="rec-btn sugar" id="btnRecordSugarCCW">
+                            🧪 Record Sugar CCW (<i>b'</i>)
+                        </button>
+                    </div>
+                    <div class="recorded-badge" id="recordedBadge">Ready to record readings</div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CALCULATIONS & OBSERVATION TABLE -->
+
+    <section class="calculation-section">
+
+        <div class="section-heading">
+            <span>03 / EXPERIMENTAL ANALYSIS & OBSERVATION TABLE</span>
+            <h2>Observation Table & Specific Rotation</h2>
+            <p>Readings recorded from the polarimeter scale are compiled here to calculate the specific rotation.</p>
+        </div>
+
+        <div class="formula">
+            <span>FORMULA USED (HALF-SHADE POLARIMETER)</span>
+            <strong>S = θ / (l × c)</strong>
+            <small>
+                Where &nbsp;•&nbsp; <b>θ = (θ₁ + θ₂) / 2</b> (Mean rotation) &nbsp;|&nbsp;
+                <b>θ₁ = |a - a'|</b> (Clockwise difference) &nbsp;|&nbsp;
+                <b>θ₂ = |b - b'|</b> (Anti-clockwise difference) &nbsp;|&nbsp;
+                <b>l</b> = Tube length in dm &nbsp;|&nbsp;
+                <b>c</b> = Concentration of sugar solution in gm/c.c.
+            </small>
+        </div>
+
+        <!-- LAB OBSERVATION TABLE -->
+        <div class="table-container">
+            <div class="table-header-title">
+                <span>LABORATORY OBSERVATION TABLE (EXPERIMENT NO. 07)</span>
+            </div>
+            <table class="lab-table" id="observationTable">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Trial / Conc. (gm/c.c.)</th>
+                        <th colspan="3">Reading with Pure Water</th>
+                        <th colspan="3">Reading with Sugar Solution</th>
+                        <th rowspan="2">θ₁ = |a - a'|<br>(Clockwise)</th>
+                        <th rowspan="2">θ₂ = |b - b'|<br>(Anti-clockwise)</th>
+                        <th rowspan="2">Mean θ =<br>(θ₁+θ₂)/2</th>
+                        <th rowspan="2">Specific Rotation <i>S</i><br>(° dm⁻¹ (gm/c.c.)⁻¹)</th>
+                    </tr>
+                    <tr>
+                        <th>CW Total <i>a</i> (°)</th>
+                        <th>CCW Total <i>b</i> (°)</th>
+                        <th>Avg Water</th>
+                        <th>CW Total <i>a'</i> (°)</th>
+                        <th>CCW Total <i>b'</i> (°)</th>
+                        <th>Avg Sugar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="row1">
+                        <td>
+                            <input type="number" class="tbl-input conc-input" id="tblConc1" value="0.05" step="0.01">
+                        </td>
+                        <td><input type="number" class="tbl-input" id="tblWaterCW1" value="0.00" step="0.05"></td>
+                        <td><input type="number" class="tbl-input" id="tblWaterCCW1" value="180.00" step="0.05"></td>
+                        <td class="tbl-calc" id="tblWaterAvg1">0.00°</td>
+                        <td><input type="number" class="tbl-input" id="tblSugarCW1" value="6.65" step="0.05"></td>
+                        <td><input type="number" class="tbl-input" id="tblSugarCCW1" value="186.65" step="0.05"></td>
+                        <td class="tbl-calc" id="tblSugarAvg1">6.65°</td>
+                        <td class="tbl-calc" id="tblTheta1_1">6.65°</td>
+                        <td class="tbl-calc" id="tblTheta2_1">6.65°</td>
+                        <td class="tbl-calc highlight" id="tblMeanTheta1">6.65°</td>
+                        <td class="tbl-calc highlight-s" id="tblSpecific1">66.50</td>
+                    </tr>
+                    <tr id="row2" class="active-row">
+                        <td>
+                            <input type="number" class="tbl-input conc-input" id="tblConc2" value="0.10" step="0.01">
+                        </td>
+                        <td><input type="number" class="tbl-input" id="tblWaterCW2" value="0.00" step="0.05"></td>
+                        <td><input type="number" class="tbl-input" id="tblWaterCCW2" value="180.00" step="0.05"></td>
+                        <td class="tbl-calc" id="tblWaterAvg2">0.00°</td>
+                        <td><input type="number" class="tbl-input" id="tblSugarCW2" value="13.30" step="0.05"></td>
+                        <td><input type="number" class="tbl-input" id="tblSugarCCW2" value="193.30" step="0.05"></td>
+                        <td class="tbl-calc" id="tblSugarAvg2">13.30°</td>
+                        <td class="tbl-calc" id="tblTheta1_2">13.30°</td>
+                        <td class="tbl-calc" id="tblTheta2_2">13.30°</td>
+                        <td class="tbl-calc highlight" id="tblMeanTheta2">13.30°</td>
+                        <td class="tbl-calc highlight-s" id="tblSpecific2">66.50</td>
+                    </tr>
+                    <tr id="row3">
+                        <td>
+                            <input type="number" class="tbl-input conc-input" id="tblConc3" value="0.15" step="0.01">
+                        </td>
+                        <td><input type="number" class="tbl-input" id="tblWaterCW3" value="0.00" step="0.05"></td>
+                        <td><input type="number" class="tbl-input" id="tblWaterCCW3" value="180.00" step="0.05"></td>
+                        <td class="tbl-calc" id="tblWaterAvg3">0.00°</td>
+                        <td><input type="number" class="tbl-input" id="tblSugarCW3" value="19.95" step="0.05"></td>
+                        <td><input type="number" class="tbl-input" id="tblSugarCCW3" value="199.95" step="0.05"></td>
+                        <td class="tbl-calc" id="tblSugarAvg3">19.95°</td>
+                        <td class="tbl-calc" id="tblTheta1_3">19.95°</td>
+                        <td class="tbl-calc" id="tblTheta2_3">19.95°</td>
+                        <td class="tbl-calc highlight" id="tblMeanTheta3">19.95°</td>
+                        <td class="tbl-calc highlight-s" id="tblSpecific3">66.50</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="calc-actions">
+            <button id="calculateButton">Compute Table & Final Results →</button>
+            <button class="reset-button" id="resetCalculation">Reset All Table Readings</button>
+        </div>
+
+        <!-- RESULTS COMPARISON CARD -->
+        <div class="results">
+
+            <div class="result-heading">
+                <span>FINAL EXPERIMENTAL RESULT</span>
+                <h3>Specific Rotation Summary</h3>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <span class="rc-label">Mean Specific Rotation (S)</span>
+                    <b class="rc-val" id="finalMeanS">66.50</b>
+                    <small>° dm⁻¹ (gm/c.c.)⁻¹</small>
+                </div>
+
+                <div class="result-card">
+                    <span class="rc-label">Standard Literature Value</span>
+                    <b class="rc-val standard">+66.50</b>
+                    <small>° dm⁻¹ (gm/c.c.)⁻¹ at 20°C</small>
+                </div>
+
+                <div class="result-card">
+                    <span class="rc-label">Percentage Error</span>
+                    <b class="rc-val error" id="percentageError">0.00%</b>
+                    <small>|Exp - Std| / Std × 100</small>
+                </div>
+            </div>
+
+            <p id="resultMessage">
+                Calculation verified! Readings show consistent specific rotation matching the standard value of dextrorotatory cane sugar.
+            </p>
+
+        </div>
+
+        <!-- GRAPH SECTION: THETA VS CONCENTRATION -->
+        <div class="graph-card">
+            <div class="section-heading" style="margin-bottom: 12px;">
+                <span>GRAPHICAL ANALYSIS</span>
+                <h3>Graph between Optical Rotation (θ) and Concentration (c)</h3>
+                <p>As per lab manual page 35: The slope of this straight line gives <i>l × S</i>, verifying Biot's law of optical rotation.</p>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="thetaGraphCanvas"></canvas>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- COMPONENT INFORMATION -->
+
+    <section class="information">
+
+        <div class="section-heading">
+            <span>04 / THEORY</span>
+            <h2>Components and Their Functions</h2>
+        </div>
+
+        <div class="component-list">
+
+            <p><b>Light Source:</b> Provides monochromatic light for the experiment.</p>
+
+            <p><b>Convex Lens:</b> Helps produce a parallel beam of light.</p>
+
+            <p><b>Polarizer:</b> Converts ordinary light into plane-polarized light.</p>
+
+            <p><b>Half-Shade Device:</b> Divides the field of view into two halves for brightness comparison.</p>
+
+            <p><b>Solution Tube:</b> Contains the optically active cane sugar solution.</p>
+
+            <p><b>Analyzer:</b> Helps determine the angle of rotation.</p>
+
+            <p><b>Telescope:</b> Used to observe the field of view.</p>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    VIRTUAL POLARIMETER LABORATORY
+    <p>Program Made By - TEAM GALAXY</p>
+    <small>MAIT | Applied Physics Laboratory</small>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
